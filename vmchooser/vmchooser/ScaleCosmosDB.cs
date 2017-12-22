@@ -18,7 +18,7 @@ namespace vmchooser
     public static class ScaleCosmosDB
     {
         [FunctionName("ScaleCosmosDB")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             log.Info("Let's get this CosmosDB Collection rescaled!");
 
