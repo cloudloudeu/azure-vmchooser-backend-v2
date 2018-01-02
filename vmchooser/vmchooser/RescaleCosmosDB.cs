@@ -13,7 +13,7 @@ namespace vmchooser
         [FunctionName("RescaleCosmosDB")]
         public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, TraceWriter log)
         {
-            log.Info("Let's get this CosmosDB Collection rescaled! {DateTime.Now}");
+            log.Info("Let's get this CosmosDB Collection rescaled! " + DateTime.Now.ToString());
 
             Decimal minRequestUnits = 400;
             Decimal requestunits = minRequestUnits;
