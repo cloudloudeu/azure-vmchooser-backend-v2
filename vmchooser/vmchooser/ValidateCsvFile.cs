@@ -10,16 +10,16 @@ namespace vmchooser
     public static class ValidateCsvFile
     {
         [FunctionName("ValidateCsvFile")]
-        public static void Run([BlobTrigger("input/{name}", Connection = "vmchooser_sa_blob_input")]string myBlob, string name, TraceWriter log)
+        public static void Run([BlobTrigger("input/{name}", Connection = "vmchooser-sa-blob-input")]string myBlob, string name, TraceWriter log)
         {
             log.Info($"VMchooser Bulk Mapping \n Name:{name} \n Size: {myBlob.Length} Bytes");
 
-            int expected_field_count = System.Int32.Parse(System.Environment.GetEnvironmentVariable("vmchooser_csv_fieldcount"));
+            int expected_field_count = System.Int32.Parse(System.Environment.GetEnvironmentVariable("vmchooser-csv-fieldcount"));
 
             using (StringReader reader = new StringReader(myBlob))
             {
                 string line;
-                string vmchooser_sa_queue_batch = System.Environment.GetEnvironmentVariable("vmchooser_sa_queue_batch");
+                string vmchooser_sa_queue_batch = System.Environment.GetEnvironmentVariable("vmchooser-sa-queue-batch");
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(vmchooser_sa_queue_batch);
                 CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
                 CloudQueue queue = queueClient.GetQueueReference("vmchooserbatch");
