@@ -28,22 +28,22 @@ namespace vmchooser
             var collection = database.GetCollection<BsonDocument>(collectionName);
 
             // parse query parameter
-            string name = req.GetQueryNameValuePairs()
-                .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
+            string vmsize = req.GetQueryNameValuePairs()
+                .FirstOrDefault(q => string.Compare(q.Key, "vmsize", true) == 0)
                 .Value;
 
             // Get request body
             dynamic data = await req.Content.ReadAsAsync<object>();
 
             // Set name to query string or body data
-            name = name ?? data?.name;
+            vmsize = vmsize ?? data?.vmsize;
 
             // First Logging
-            log.Info("Retrieving the VMsize for " + name);
+            log.Info("Retrieving the VMsize for " + vmsize);
 
             // Query Builder
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Eq("name", name);
+            var filter = builder.Eq("name", vmsize);
 
             using (var cursor = await collection.Find(filter).Limit(1).ToCursorAsync())
             {
@@ -57,7 +57,7 @@ namespace vmchooser
                 }
             }
 
-            return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a valid vm name on the query string or in the request body"); 
+            return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a valid vmsize on the query string or in the request body"); 
         }
     }
 }
