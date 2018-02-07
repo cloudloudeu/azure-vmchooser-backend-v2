@@ -1,4 +1,5 @@
 using System.IO;
+using System.Net;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 
@@ -19,6 +20,7 @@ namespace vmchooser
             using (StringReader reader = new StringReader(myBlob))
             {
                 string line;
+                int msgcount = 0;
                 string vmchooser_sa_queue_batch = System.Environment.GetEnvironmentVariable("vmchooser-sa-queue-batch");
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(vmchooser_sa_queue_batch);
                 CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
@@ -35,12 +37,22 @@ namespace vmchooser
                         CloudQueueMessage message = new CloudQueueMessage(line);
                         queue.AddMessageAsync(message);
                         log.Info("Message added to the queue");
+                        msgcount++;
                     }
                     else
                     {
                         log.Error("Wrong amount of fields ({field_count_str}) received. Was {delimiter} used as a delimiter?");
                     }
                 }
+                string vmchooser_api_scalecosmosdb = System.Environment.GetEnvironmentVariable("vmchooser-api-scalecosmosdb");
+                int ru = msgcount * 30;
+                int minru = 400;
+                int maxru = 10000;
+                if (ru < minru) { ru = minru; }
+                if (ru > maxru) { ru = maxru; }
+                string apicall = vmchooser_api_scalecosmosdb + "&ru=" + ru.ToString();
+                HttpWebRequest request = WebRequest.Create(apicall) as HttpWebRequest;
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
             }
         }
     }
