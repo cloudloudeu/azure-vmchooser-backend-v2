@@ -167,7 +167,7 @@ namespace vmchooser
                                     {
                                         StreamReader diskreader = new StreamReader(diskstream, System.Text.Encoding.UTF8);
                                         String stringDiskResponse = diskreader.ReadToEnd();
-                                        // log.Info("Disk : " + stringDiskResponse);
+                                        log.Info("Disk : " + stringDiskResponse);
                                         /* Example JSON Return 
                                         {
                                            "Disk T-Shirt Size":"s20",
@@ -184,10 +184,10 @@ namespace vmchooser
                                            "Currency":"EUR"
                                         }
                                         */
-                                        JObject joDiskResponse = JObject.Parse(stringResponse);
-                                        dynamic diskInfo = (JObject)joDiskResponse["1"];
+                                        JObject joDiskResponse = JObject.Parse(stringDiskResponse);
+                                        dynamic diskInfo = (JObject)joDiskResponse;
                                         string diskInfoTshirtsize = diskInfo["Disk T-Shirt Size"];
-                                        string diskInfoType = diskInfo["Disk Type)"];
+                                        string diskInfoType = diskInfo["Disk Type"];
                                         string diskInfoCapacitySingle = diskInfo["Capacity (GB) - per disk"];
                                         string diskInfoIopsSingle = diskInfo["IOPS (IO/s) - per disk"];
                                         string diskInfoThoughputSingle = diskInfo["Througput (MB/s) - per disk"];
@@ -221,6 +221,9 @@ namespace vmchooser
                                         vmresult.InputContract = contract;
                                         vmresult.InputCurrency = currency;
                                         vmresult.InputBurstable = burst;
+                                        vmresult.DiskType = diskInfoType;
+                                        vmresult.DiskConfig = diskInfoDescription;
+                                        vmresult.DiskConfigPrice = diskInfoPrice;
                                         vmresult.Name = vmInfoName;
                                         vmresult.ACU = vmInfoAcu;
                                         vmresult.SSD = vmInfoSsd;
@@ -235,9 +238,6 @@ namespace vmchooser
                                         vmresult.PriceHour = vmInfoPricehour;
                                         vmresult.Price200h = vmInfoPrice200h;
                                         vmresult.PriceMonth = vmInfoPricemonth;
-                                        vmresult.DiskType = diskInfoType;
-                                        vmresult.DiskConfig = diskInfoDescription;
-                                        vmresult.DiskConfigPrice = diskInfoPrice;
                                         TableOperation insertOperation = TableOperation.Insert(vmresult);
                                         table.Execute(insertOperation);
                                     }
