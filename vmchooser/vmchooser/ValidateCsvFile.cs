@@ -21,6 +21,7 @@ namespace vmchooser
             {
                 string line;
                 int msgcount = 0;
+                int linecount = 0;
                 string vmchooser_sa_queue_batch = System.Environment.GetEnvironmentVariable("vmchooser-sa-queue-batch");
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(vmchooser_sa_queue_batch);
                 CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
@@ -34,14 +35,21 @@ namespace vmchooser
                     string field_count_str = field_count.ToString();
                     if (field_count == expected_field_count)
                     {
-                        CloudQueueMessage message = new CloudQueueMessage(line);
-                        queue.AddMessageAsync(message);
-                        log.Info("Message added to the queue");
-                        msgcount++;
+                        if (linecount > 0)
+                        {
+                            line = line + delimiter + name;
+                            CloudQueueMessage message = new CloudQueueMessage(line);
+                            queue.AddMessageAsync(message);
+                            log.Info("Message added to the queue");
+                            msgcount++;
+                        } else {
+                            log.Info("Header row ignored"); //Ignore first line as this is the header
+                        }
+                        linecount++;
                     }
                     else
                     {
-                        log.Error("Wrong amount of fields ({field_count_str}) received. Was {delimiter} used as a delimiter?");
+                        log.Error("Wrong amount of fields "+field_count_str+" received. Was "+delimiter+" used as a delimiter?");
                     }
                 }
                 string vmchooser_api_scalecosmosdb = System.Environment.GetEnvironmentVariable("vmchooser-api-scalecosmosdb");
