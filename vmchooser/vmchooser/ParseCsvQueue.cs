@@ -167,7 +167,7 @@ namespace vmchooser
                                     {
                                         StreamReader diskreader = new StreamReader(diskstream, System.Text.Encoding.UTF8);
                                         String stringDiskResponse = diskreader.ReadToEnd();
-                                        log.Info("Disk : " + stringDiskResponse);
+                                        //log.Info("Disk : " + stringDiskResponse);
                                         /* Example JSON Return 
                                         {
                                            "Disk T-Shirt Size":"s20",
