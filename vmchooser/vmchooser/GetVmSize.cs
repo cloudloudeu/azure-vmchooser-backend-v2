@@ -36,10 +36,18 @@ namespace vmchooser
             decimal pcores = Convert.ToDecimal(GetParameter("pcores", "0", req));
             pcores = SetMinimum(pcores, 0);
             log.Info("PCores : " + pcores.ToString());
+            // Azure Compute Unit (Min) #
+            decimal acu = Convert.ToDecimal(GetParameter("acu", "0", req));
+            acu = SetMinimum(pcores, 0);
+            log.Info("ACU : " + acu.ToString());
             // Memory (Min) #
             decimal memory = Convert.ToDecimal(GetParameter("memory", "0", req));
             memory = SetMinimum(memory, 0);
             log.Info("Memory : " + memory.ToString());
+            // NICS (Min) #
+            decimal nics = Convert.ToDecimal(GetParameter("nics", "0", req));
+            nics = SetMinimum(nics, 0);
+            log.Info("NICs : " + nics.ToString());
             // IOPS (Min) #
             decimal iops = Convert.ToDecimal(GetParameter("iops", "-127", req));
             iops = SetMinimum(iops, -127);
@@ -90,20 +98,50 @@ namespace vmchooser
             string contract = GetParameter("contract", "payg", req).ToLower();
             log.Info("Contract : " + contract.ToString());
             // Results (Max) #
-            decimal results = Convert.ToDecimal(GetParameter("results", "5", req));
+            decimal results = Convert.ToDecimal(GetParameter("maxresults", "5", req));
             results = SetMinimum(results, 1);
             results = SetMaximum(results, 100);
             log.Info("Results : " + results.ToString());
+            // Right Sizing CPU 95pct (Peak Util) %
+            decimal avgcpupeak = Convert.ToDecimal(GetParameter("avgcpupeak", "100", req));
+            avgcpupeak = SetMinimum(avgcpupeak, 0);
+            avgcpupeak = SetMaximum(avgcpupeak, 100);
+            log.Info("AvgCpuPeak : " + avgcpupeak.ToString());
+            // Right Sizing Memory 95pct (Peak GB) %
+            decimal avgmempeak = Convert.ToDecimal(GetParameter("avgmempeak", "100", req));
+            avgmempeak = SetMinimum(avgmempeak, 0);
+            avgmempeak = SetMaximum(avgmempeak, 100);
+            log.Info("AvgMemPeak : " + avgmempeak.ToString());
+            
+            // Right Sizing CPU
+            cores = cores * avgcpupeak / 100;
+            pcores = pcores * avgcpupeak / 100;
+            log.Info("Cores* : " + cores.ToString());
+            log.Info("PCores* : " + pcores.ToString());
+
+            // Right Sizing Memory
+            memory = memory * avgmempeak / 100;
+            log.Info("Memory* : " + memory.ToString());
 
             var filterBuilder = Builders<BsonDocument>.Filter;
-            var filter  = filterBuilder.Gte("cores", Convert.ToInt16(cores)) 
+            var filter  = filterBuilder.Eq("type", "vm")
+                        & filterBuilder.Gte("cores", Convert.ToInt16(cores)) 
                         & filterBuilder.Gte("mem", Convert.ToInt16(memory))
                         & filterBuilder.Gte("pcores", Convert.ToInt16(pcores))
+                        & filterBuilder.Gte("ACU", Convert.ToInt16(acu))
+                        & filterBuilder.Gte("MaxNics", Convert.ToInt16(nics))
                         & filterBuilder.Gte("MaxVmIops", Convert.ToInt16(iops))
                         & filterBuilder.Gte("MaxVmThroughputMBs", Convert.ToInt16(throughput))
                         & filterBuilder.Gte("MaxDataDiskSizeGB", Convert.ToInt16(data))
                         & filterBuilder.Gte("TempDiskSizeInGB", Convert.ToInt16(temp))
                         & filterBuilder.Eq("region", region)
+                        & filterBuilder.Eq("tier", tier)
+                        //& filterBuilder.Eq("Hyperthreaded", htfilter[0])
+                        //& filterBuilder.Eq("Hyperthreaded", htfilter[1])
+                        //& filterBuilder.Eq("SSD", ssdfilter[0])
+                        //& filterBuilder.Eq("SSD", ssdfilter[1])
+                        //& filterBuilder.Eq("burstable", burstablefilter[0])
+                        //& filterBuilder.Eq("burstable", burstablefilter[1])
                         ;
             var sort = Builders<BsonDocument>.Sort.Ascending("price");
             var cursor = collection.Find(filter).Sort(sort).Limit(Convert.ToInt16(results)).ToCursor();
@@ -132,16 +170,16 @@ namespace vmchooser
 
             switch (value.ToLower()) {
                 case "yes":
-                    response[0] = "yes";
-                    response[1] = "yes";
+                    response[0] = "Yes";
+                    response[1] = "Yes";
                     break;
                 case "no":
-                    response[0] = "no";
-                    response[1] = "no";
+                    response[0] = "No";
+                    response[1] = "No";
                     break;
                 default:
-                    response[0] = "yes";
-                    response[1] = "no";
+                    response[0] = "Yes";
+                    response[1] = "No";
                     break;
             }
 
