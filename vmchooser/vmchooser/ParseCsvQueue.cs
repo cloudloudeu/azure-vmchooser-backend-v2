@@ -152,12 +152,12 @@ namespace vmchooser
                             string vmchooser_api_url_getdisksize = System.Environment.GetEnvironmentVariable("vmchooser-api-url-getdisksize");
                             decimal fixeddata;
                             bool parsed = Decimal.TryParse(data, out fixeddata);
-                            log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
+                            //log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
                             fixeddata = fixeddata * 1024; //Convert TB to GB
-                            log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
+                            //log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
                             string diskquerysuffix = "?region=" + region + "&iops=" + iops + "&data=" + fixeddata.ToString() + "&throughput=" + throughput + "&currency=" + currency + "&ssd=" + ssd + "&maxdisks=" + vmInfoDisks;
                             string diskapicall = vmchooser_api_url_getdisksize + diskquerysuffix;
-                            log.Info(diskapicall);
+                            //log.Info(diskapicall);
 
                             HttpWebRequest diskrequest = WebRequest.Create(diskapicall) as HttpWebRequest;
                             diskrequest.Headers["Ocp-Apim-Subscription-Key"] = vmchooser_api_authorizationkey;
