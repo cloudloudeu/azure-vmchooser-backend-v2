@@ -155,7 +155,7 @@ namespace vmchooser
                             fixeddata = fixeddata * 1024; //Convert TB to GB
                             string diskquerysuffix = "?region=" + region + "&iops=" + iops + "&data=" + fixeddata.ToString() + "&throughput=" + throughput + "&currency=" + currency + "&ssd=" + ssd + "&maxdisks=" + vmInfoDisks;
                             string diskapicall = vmchooser_api_url_getdisksize + diskquerysuffix;
-                            //log.Info(diskapicall);
+                            log.Info(diskapicall);
 
                             HttpWebRequest diskrequest = WebRequest.Create(diskapicall) as HttpWebRequest;
                             diskrequest.Headers["Ocp-Apim-Subscription-Key"] = vmchooser_api_authorizationkey;
@@ -169,7 +169,7 @@ namespace vmchooser
                                     {
                                         StreamReader diskreader = new StreamReader(diskstream, System.Text.Encoding.UTF8);
                                         String stringDiskResponse = diskreader.ReadToEnd();
-                                        //log.Info("Disk : " + stringDiskResponse);
+                                        log.Info("Disk : " + stringDiskResponse);
                                         /* Example JSON Return 
                                         {
                                            "Disk T-Shirt Size":"s20",
