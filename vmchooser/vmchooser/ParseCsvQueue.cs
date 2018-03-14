@@ -153,6 +153,7 @@ namespace vmchooser
                             int fixeddata;
                             bool parsed = Int32.TryParse(data, out fixeddata);
                             fixeddata = fixeddata * 1024; //Convert TB to GB
+                            log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
                             string diskquerysuffix = "?region=" + region + "&iops=" + iops + "&data=" + fixeddata.ToString() + "&throughput=" + throughput + "&currency=" + currency + "&ssd=" + ssd + "&maxdisks=" + vmInfoDisks;
                             string diskapicall = vmchooser_api_url_getdisksize + diskquerysuffix;
                             log.Info(diskapicall);
