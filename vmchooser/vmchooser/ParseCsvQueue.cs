@@ -150,8 +150,9 @@ namespace vmchooser
 
                             // Retrieve most optimal disk config
                             string vmchooser_api_url_getdisksize = System.Environment.GetEnvironmentVariable("vmchooser-api-url-getdisksize");
-                            int fixeddata;
-                            bool parsed = Int32.TryParse(data, out fixeddata);
+                            decimal fixeddata;
+                            bool parsed = Decimal.TryParse(data, out fixeddata);
+                            log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
                             fixeddata = fixeddata * 1024; //Convert TB to GB
                             log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
                             string diskquerysuffix = "?region=" + region + "&iops=" + iops + "&data=" + fixeddata.ToString() + "&throughput=" + throughput + "&currency=" + currency + "&ssd=" + ssd + "&maxdisks=" + vmInfoDisks;
