@@ -8,9 +8,35 @@ using Microsoft.Azure.WebJobs.Host;
 using System;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using System.Collections.Generic;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace vmchooser
 {
+    [BsonIgnoreExtraElements]
+    public class VmSize
+    {
+        [BsonElement("name")]
+        public string Name { get; set; }
+        [BsonElement("region")]
+        public string Region { get; set; }
+        [BsonElement("contract")]
+        public string Contract { get; set; }
+        [BsonElement("ACU")]
+        public Int16 ACU { get; set; }
+        [BsonElement("SSD")]
+        public string SSD { get; set; }
+        [BsonElement("cores")]
+        public Int16 Cores { get; set; }
+        [BsonElement("mem")]
+        public Decimal Memory { get; set; }
+        [BsonElement("price")]
+        public Decimal Price { get; set; }
+    }
+
     public static class GetVmSize
     {
         [FunctionName("GetVmSize")]
@@ -20,6 +46,9 @@ namespace vmchooser
             string databaseName = Environment.GetEnvironmentVariable("cosmosdbDatabaseName");
             string collectionName = Environment.GetEnvironmentVariable("cosmosdbCollectionName");
             string mongodbConnectionString = Environment.GetEnvironmentVariable("cosmosdbMongodbConnectionString");
+
+            // Set BSON AutoMap
+            //BsonClassMap.RegisterClassMap<VmSize>();
 
             // This endpoint is valid for all MongoDB
             var client = new MongoClient(mongodbConnectionString);
@@ -136,21 +165,29 @@ namespace vmchooser
                         & filterBuilder.Gte("TempDiskSizeInGB", Convert.ToInt16(temp))
                         & filterBuilder.Eq("region", region)
                         & filterBuilder.Eq("tier", tier)
-                        //& filterBuilder.Eq("Hyperthreaded", htfilter[0])
-                        //& filterBuilder.Eq("Hyperthreaded", htfilter[1])
-                        //& filterBuilder.Eq("SSD", ssdfilter[0])
-                        //& filterBuilder.Eq("SSD", ssdfilter[1])
-                        //& filterBuilder.Eq("burstable", burstablefilter[0])
-                        //& filterBuilder.Eq("burstable", burstablefilter[1])
+                        & filterBuilder.In("Hyperthreaded", htfilter)
+                        & filterBuilder.In("SSD", ssdfilter)
+                        //& filterBuilder.In("burstable", burstablefilter)
                         ;
             var sort = Builders<BsonDocument>.Sort.Ascending("price");
-            var cursor = collection.Find(filter).Sort(sort).Limit(Convert.ToInt16(results)).ToCursor();
+            var cursor = collection.Find<BsonDocument>(filter).Sort(sort).Limit(Convert.ToInt16(results)).ToCursor();
+
+            // Get results and put them into a list of objects
+            List<VmSize> documents = new List<VmSize>();
             foreach (var document in cursor.ToEnumerable())
             {
                 log.Info(document.ToString());
+                VmSize myVmSize = BsonSerializer.Deserialize<VmSize>(document);
+                log.Info(myVmSize.Name);
+                documents.Add(myVmSize);
             }
 
-            return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
+            // Convert to JSON & return it
+            var json = JsonConvert.SerializeObject(documents, Formatting.Indented);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
         }
 
         static public string GetParameter(string name, string defaultvalue, HttpRequestMessage req)
