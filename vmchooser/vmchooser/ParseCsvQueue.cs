@@ -84,7 +84,7 @@ namespace vmchooser
             string vmchooser_api_url_getvmsize = System.Environment.GetEnvironmentVariable("vmchooser-api-url-getvmsize");
             string querysuffix = "?burstable="+burst+ "&maxresults=1&region" + region + "&cores=" + cores + "&memory=" + memory + "&iops=" + iops + "&data=" + data + "&temp=" + temp + "&throughput=" + throughput + "&nics=" + nic + "&ssd=" + ssd + "&avgcpupeak=" + peakcpu + "&avgmempeak=" + peakmem + "&currency=" + currency + "&contract=" + contract;
             string apicall = vmchooser_api_url_getvmsize + querysuffix;
-            //log.Info(apicall);
+            log.Info(apicall);
 
             HttpWebRequest request = WebRequest.Create(apicall) as HttpWebRequest;
             request.Headers["Ocp-Apim-Subscription-Key"] = vmchooser_api_authorizationkey;
