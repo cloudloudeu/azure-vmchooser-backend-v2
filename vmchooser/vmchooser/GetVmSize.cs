@@ -16,25 +16,166 @@ using System.Text;
 
 namespace vmchooser
 {
-    [BsonIgnoreExtraElements]
+    [BsonIgnoreExtraElements] // Ignore all non-declared objects
     public class VmSize
     {
+        /*
+        { 
+            OK "name" : "f1s", 
+            NA "type" : "vm", 
+            OK "contract" : "ri3y", 
+            OK "tier" : "standard", 
+            OK "cores" : 1, 
+            NA "pcores" : 1, 
+            OK "mem" : 2, 
+            OK "region" : "europe-west", 
+            OK "price" : 0.028199999999999999, 
+            OK "ACU" : 210, 
+            OK "SSD" : "Yes", 
+            OK "MaxNics" : 2, 
+            OK "Bandwidth" : 750, 
+            OK "MaxDataDiskCount" : 4, 
+            OK "MaxDataDiskSizeGB" : 16384, 
+            OK "MaxDataDiskIops" : 30000, 
+            OK "MaxDataDiskThroughputMBs" : 1000, 
+            OK "MaxVmIops" : 3200, 
+            OK "MaxVmThroughputMBs" : 48, 
+            NA "ResourceDiskSizeInMB" : 4096, 
+            NA "TempDiskSizeInGB" : 4, 
+            NA "TempDiskIops" : 4000, 
+            NA "TempDiskReadMBs" : 32, 
+            NA "TempDiskWriteMBs" : -1, 
+            NA "SAPS2T" : -2, 
+            NA "SAPS3T" : -2, 
+            NA "HANA" : -2, 
+            OK "Hyperthreaded" : "No", 
+            OK "OfferName" : "linux-f1s-standard", 
+            NA "_id" : "linux-f1s-standard-europe-west-ri3y", 
+            OK "price_USD" : 0.028199999999999999, 
+            OK "price_EUR" : 0.02378106, 
+            OK "price_GBP" : 0.021017713800000001, 
+            OK "price_AUD" : 0.03591834, 
+            OK "price_JPY" : 2.8763999999999998, 
+            OK "price_CAD" : 0.03428838, 
+            OK "price_DKK" : 0.17747388, 
+            OK "price_CHF" : 0.025467420000000001, 
+            OK "price_SEK" : 0.22196784, 
+            OK "price_IDR" : 385.21199999999999, 
+            OK "price_INR" : 1.8639142499999999, 
+            OK "burstable" : "No", 
+            OK "isolated" : "No" 
+        }
+        */
+
         [BsonElement("name")]
         public string Name { get; set; }
+
+        [BsonElement("tier")]
+        public string Tier { get; set; }
+
         [BsonElement("region")]
         public string Region { get; set; }
+
         [BsonElement("contract")]
         public string Contract { get; set; }
+
         [BsonElement("ACU")]
         public Int16 ACU { get; set; }
+
         [BsonElement("SSD")]
         public string SSD { get; set; }
+
         [BsonElement("cores")]
         public Int16 Cores { get; set; }
+
         [BsonElement("mem")]
         public Decimal Memory { get; set; }
+
         [BsonElement("price")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal Price { get; set; }
+
+        public String Currency = "USD";
+
+        [BsonElement("burstable")]
+        public string Burstable { get; set; }
+
+        [BsonElement("isolated")]
+        public string Isolated { get; set; }
+
+        [BsonElement("OfferName")]
+        public string OfferName { get; set; }
+
+        [BsonElement("Hyperthreaded")]
+        public string Hyperthreaded { get; set; }
+
+        [BsonElement("MaxNics")]
+        public Decimal MaxNics { get; set; }
+
+        [BsonElement("Bandwidth")]
+        public Decimal Bandwidth { get; set; }
+
+        [BsonElement("MaxDataDiskCount")]
+        public Decimal MaxDataDiskCount { get; set; }
+
+        [BsonElement("MaxDataDiskSizeGB")]
+        public Decimal MaxDataDiskSizeGB { get; set; }
+
+        [BsonElement("MaxDataDiskIops")]
+        public Decimal MaxDataDiskIops { get; set; }
+
+        [BsonElement("MaxDataDiskThroughputMBs")]
+        public Decimal MaxDataDiskThroughputMBs { get; set; }
+
+        [BsonElement("MaxVmIops")]
+        public Decimal MaxVmIops { get; set; }
+
+        [BsonElement("MaxVmThroughputMBs")]
+        public Decimal MaxVmThroughputMBs { get; set; }
+
+        [BsonElement("price_USD")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_USD { get; set; }
+
+        [BsonElement("price_EUR")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_EUR { get; set; }
+
+        [BsonElement("price_GBP")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_GBP { get; set; }
+
+        [BsonElement("price_AUD")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_AUD { get; set; }
+
+        [BsonElement("price_JPY")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_JPY { get; set; }
+
+        [BsonElement("price_CAD")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_CAD { get; set; }
+
+        [BsonElement("price_DKK")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_DKK { get; set; }
+
+        [BsonElement("price_CHF")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_CHF { get; set; }
+
+        [BsonElement("price_SEK")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_SEK { get; set; }
+
+        [BsonElement("price_IDR")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_IDR { get; set; }
+
+        [BsonElement("price_INR")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_INR { get; set; }
     }
 
     public static class GetVmSize
