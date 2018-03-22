@@ -176,6 +176,13 @@ namespace vmchooser
         [BsonElement("price_INR")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_INR { get; set; }
+
+        // Set the Price & Currency on a requested currency name
+        public void setCurrency(string currency)
+        {
+            Currency = currency;
+            Price = Convert.ToDecimal(this.GetType().GetProperty("price_" + currency).GetValue(this, null));
+        }
     }
 
     public static class GetVmSize
@@ -320,6 +327,7 @@ namespace vmchooser
                 log.Info(document.ToString());
                 VmSize myVmSize = BsonSerializer.Deserialize<VmSize>(document);
                 log.Info(myVmSize.Name);
+                myVmSize.setCurrency(currency);
                 documents.Add(myVmSize);
             }
 
