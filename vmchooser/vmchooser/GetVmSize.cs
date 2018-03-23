@@ -73,6 +73,7 @@ namespace vmchooser
         [BsonElement("name")]
         public string Name { get; set; }
 
+        [Display(Description = "The name of the Tier")]
         [BsonElement("tier")]
         public string Tier { get; set; }
 
@@ -84,15 +85,19 @@ namespace vmchooser
         [BsonElement("contract")]
         public string Contract { get; set; }
 
+        [Display(Description = "Azure Compute Unit")]
         [BsonElement("ACU")]
         public Int16 ACU { get; set; }
 
+        [Display(Description = "Is the VM SSD (Premium Storage) capable? [Yes/No]")]
         [BsonElement("SSD")]
         public string SSD { get; set; }
 
+        [Display(Description = "# of cores")]
         [BsonElement("cores")]
         public Int16 Cores { get; set; }
 
+        [Display(Description = "# of memory (in GB)")]
         [BsonElement("mem")]
         public Decimal Memory { get; set; }
 
@@ -120,70 +125,89 @@ namespace vmchooser
         [BsonElement("Hyperthreaded")]
         public string Hyperthreaded { get; set; }
 
+        [Display(Description = "Maximum number of Network Interface Cards")]
         [BsonElement("MaxNics")]
         public Decimal MaxNics { get; set; }
 
+        [Display(Description = "Bandwidth (in Mbps)")]
         [BsonElement("Bandwidth")]
         public Decimal Bandwidth { get; set; }
 
+        [Display(Description = "Maximum number of Data Disks (not including the OS disk)")]
         [BsonElement("MaxDataDiskCount")]
         public Decimal MaxDataDiskCount { get; set; }
 
+        [Display(Description = "Maximum amount of data possible (Max # disks * Max Disks Size)")]
         [BsonElement("MaxDataDiskSizeGB")]
         public Decimal MaxDataDiskSizeGB { get; set; }
 
+        [Display(Description = "Maximum amount of IOPS via standard disks")]
         [BsonElement("MaxDataDiskIops")]
         public Decimal MaxDataDiskIops { get; set; }
 
+        [Display(Description = "Maximum throughput (in MB/s) via standard disks")]
         [BsonElement("MaxDataDiskThroughputMBs")]
         public Decimal MaxDataDiskThroughputMBs { get; set; }
 
+        [Display(Description = "Maximum IOPS on VM Throttling level")]
         [BsonElement("MaxVmIops")]
         public Decimal MaxVmIops { get; set; }
 
+        [Display(Description = "Maximum throughput (in MB/s) on VM Throttling level")]
         [BsonElement("MaxVmThroughputMBs")]
         public Decimal MaxVmThroughputMBs { get; set; }
 
+        [Display(Description = "Price in US Dollar")]
         [BsonElement("price_USD")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_USD { get; set; }
 
+        [Display(Description = "Price in Euro")]
         [BsonElement("price_EUR")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_EUR { get; set; }
 
+        [Display(Description = "Price in GB Pound")]
         [BsonElement("price_GBP")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_GBP { get; set; }
 
+        [Display(Description = "Price in Australian Dollar")]
         [BsonElement("price_AUD")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_AUD { get; set; }
 
+        [Display(Description = "Price in Japanese Yen")]
         [BsonElement("price_JPY")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_JPY { get; set; }
 
+        [Display(Description = "Price in Canadian Dollar")]
         [BsonElement("price_CAD")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_CAD { get; set; }
 
+        [Display(Description = "Price in Danish Krones")]
         [BsonElement("price_DKK")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_DKK { get; set; }
 
+        [Display(Description = "Price in Swiss Franks")]
         [BsonElement("price_CHF")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_CHF { get; set; }
 
+        [Display(Description = "Price in Swedish Krones")]
         [BsonElement("price_SEK")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_SEK { get; set; }
 
+        [Display(Description = "Price in Indonese Rupees")]
         [BsonElement("price_IDR")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_IDR { get; set; }
 
+        [Display(Description = "Price in Indian Rupees")]
         [BsonElement("price_INR")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_INR { get; set; }
