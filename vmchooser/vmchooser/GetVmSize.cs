@@ -13,6 +13,8 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using System.Text;
+using System.Web.Http.Description;
+using System.ComponentModel.DataAnnotations;
 
 namespace vmchooser
 {
@@ -67,15 +69,18 @@ namespace vmchooser
         }
         */
 
+        [Display(Description = "The name of the VM Size")]
         [BsonElement("name")]
         public string Name { get; set; }
 
         [BsonElement("tier")]
         public string Tier { get; set; }
 
+        [Display(Description = "The region linked to the pricing & availability of this VM Size")]
         [BsonElement("region")]
         public string Region { get; set; }
 
+        [Display(Description = "The contract used for the pricing this VM Size")]
         [BsonElement("contract")]
         public string Contract { get; set; }
 
@@ -91,21 +96,27 @@ namespace vmchooser
         [BsonElement("mem")]
         public Decimal Memory { get; set; }
 
+        [Display(Description = "The price per hour for this VMsize expressed in the indicated currency")]
         [BsonElement("price")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal Price { get; set; }
 
+        [Display(Description = "The currency used for the indicated pricing")]
         public String Currency = "USD";
 
+        [Display(Description = "Is the VM burstable? [Yes/No]")]
         [BsonElement("burstable")]
         public string Burstable { get; set; }
 
+        [Display(Description = "Is the VM isolated? [Yes/No]")]
         [BsonElement("isolated")]
         public string Isolated { get; set; }
 
+        [Display(Description = "The OfferName as it's known for Azure CLI/PowerShell/RestAPI/...")]
         [BsonElement("OfferName")]
         public string OfferName { get; set; }
 
+        [Display(Description = "Are the cores of this VM Hyperthreaded? [Yes/No]")]
         [BsonElement("Hyperthreaded")]
         public string Hyperthreaded { get; set; }
 
@@ -188,6 +199,8 @@ namespace vmchooser
     public static class GetVmSize
     {
         [FunctionName("GetVmSize")]
+        [ResponseType(typeof(VmSize))]
+        [Display(Name = "GetVmSize", Description = "Find the best VM T-Shirt Size for your given specifications")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             // CosmosDB Parameters, retrieved via environment variables
