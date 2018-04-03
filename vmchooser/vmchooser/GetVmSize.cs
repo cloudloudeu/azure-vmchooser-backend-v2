@@ -225,7 +225,7 @@ namespace vmchooser
         [FunctionName("GetVmSize")]
         [ResponseType(typeof(VmSize))]
         [Display(Name = "GetVmSize", Description = "Find the best VM T-Shirt Size for your given specifications")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, Route = null)]HttpRequestMessage req, TraceWriter log)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, Route = null)]HttpRequestMessage req, get, post, options, TraceWriter log)
         {
             // CosmosDB Parameters, retrieved via environment variables
             string databaseName = Environment.GetEnvironmentVariable("cosmosdbDatabaseName");
