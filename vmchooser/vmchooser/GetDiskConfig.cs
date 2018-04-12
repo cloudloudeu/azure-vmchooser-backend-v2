@@ -26,6 +26,9 @@ namespace vmchooser
         [Display(Description = "The type of the disk")]
         public string DiskType { get; set; }
 
+        [Display(Description = "The size of the disk")]
+        public string DiskSize { get; set; }
+
         [Display(Description = "The number of the disks used in the ocnfig")]
         public decimal DiskCount { get; set; }
 
@@ -80,6 +83,7 @@ namespace vmchooser
                 DiskCurrency = myDiskSize.Currency;
                 DiskType = myDiskSize.Tier;
                 DiskName = myDiskSize.Name;
+                DiskSize = myDiskSize.Size;
                 DiskCapacity = myDiskSize.MaxDataDiskSizeGB;
                 DiskIops = myDiskSize.MaxDataDiskIops;
                 DiskThroughput = myDiskSize.MaxDataDiskThroughputMBs;
