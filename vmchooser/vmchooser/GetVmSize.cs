@@ -305,7 +305,7 @@ namespace vmchooser
             // Isolated #
             string isolated = GetParameter("isolated", "all", req).ToLower();
             string[] isolatedfilter = new string[2];
-            isolatedfilter = YesNoAll(burstable);
+            isolatedfilter = YesNoAll(isolated);
             log.Info("Isolated : " + isolated.ToString());
             log.Info("Isolated[0] : " + isolatedfilter[0]);
             log.Info("Isolated[1] : " + isolatedfilter[1]);
