@@ -251,7 +251,7 @@ namespace vmchooser
             pcores = SetMinimum(pcores, 0);
             log.Info("PCores : " + pcores.ToString());
             // Azure Compute Unit (Min) #
-            decimal acu = Convert.ToDecimal(GetParameter("acu", "0", req));
+            decimal acu = Convert.ToDecimal(GetParameter("acu", "-127", req));
             acu = SetMinimum(acu, -127);
             log.Info("ACU : " + acu.ToString());
             // Memory (Min) #
