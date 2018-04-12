@@ -252,7 +252,7 @@ namespace vmchooser
             log.Info("PCores : " + pcores.ToString());
             // Azure Compute Unit (Min) #
             decimal acu = Convert.ToDecimal(GetParameter("acu", "0", req));
-            acu = SetMinimum(pcores, 0);
+            acu = SetMinimum(acu, 0);
             log.Info("ACU : " + acu.ToString());
             // Memory (Min) #
             decimal memory = Convert.ToDecimal(GetParameter("memory", "0", req));
@@ -302,6 +302,13 @@ namespace vmchooser
             log.Info("Burstable : " + burstable.ToString());
             log.Info("Burstable[0] : " + burstablefilter[0]);
             log.Info("Burstable[1] : " + burstablefilter[1]);
+            // Isolated #
+            string isolated = GetParameter("isolated", "all", req).ToLower();
+            string[] isolatedfilter = new string[2];
+            isolatedfilter = YesNoAll(burstable);
+            log.Info("Isolated : " + isolated.ToString());
+            log.Info("Isolated[0] : " + isolatedfilter[0]);
+            log.Info("Isolated[1] : " + isolatedfilter[1]);
             // Region #
             string region = GetParameter("region", "europe-west", req).ToLower();
             log.Info("Region : " + region.ToString());
@@ -351,6 +358,8 @@ namespace vmchooser
                         & filterBuilder.Eq("region", region)
                         & filterBuilder.Eq("tier", tier)
                         & filterBuilder.In("Hyperthreaded", htfilter)
+                        & filterBuilder.In("isolated", isolatedfilter)
+                        & filterBuilder.In("burstable", burstablefilter)
                         & filterBuilder.In("SSD", ssdfilter)
                         //& filterBuilder.In("burstable", burstablefilter)
                         ;
