@@ -82,7 +82,7 @@ namespace vmchooser
             // Retrieve most optimal vm size
             string vmchooser_api_authorizationkey = System.Environment.GetEnvironmentVariable("vmchooser-api-authorizationkey");
             string vmchooser_api_url_getvmsize = System.Environment.GetEnvironmentVariable("vmchooser-api-url-getvmsize");
-            string querysuffix = "?burstable="+burst+ "&maxresults=1&region" + region + "&cores=" + cores + "&memory=" + memory + "&iops=" + iops + "&data=" + data + "&temp=" + temp + "&throughput=" + throughput + "&nics=" + nic + "&ssd=" + ssd + "&avgcpupeak=" + peakcpu + "&avgmempeak=" + peakmem + "&currency=" + currency + "&contract=" + contract;
+            string querysuffix = "?burstable="+burst+ "&maxresults=1&region=" + region + "&cores=" + cores + "&memory=" + memory + "&iops=" + iops + "&data=" + data + "&temp=" + temp + "&throughput=" + throughput + "&nics=" + nic + "&ssd=" + ssd + "&avgcpupeak=" + peakcpu + "&avgmempeak=" + peakmem + "&currency=" + currency + "&contract=" + contract;
             string apicall = vmchooser_api_url_getvmsize + querysuffix;
             //log.Info(apicall);
 
@@ -150,8 +150,11 @@ namespace vmchooser
 
                             // Retrieve most optimal disk config
                             string vmchooser_api_url_getdisksize = System.Environment.GetEnvironmentVariable("vmchooser-api-url-getdisksize");
-                            int fixeddata = int.Parse(data) * 1024; // Convert TB to GB
-                            log.Info("Disk Size : " + fixeddata.ToString());
+                            decimal fixeddata;
+                            bool parsed = Decimal.TryParse(data, out fixeddata);
+                            //log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
+                            fixeddata = fixeddata * 1024; //Convert TB to GB
+                            //log.Info("FixedData:" + fixeddata.ToString() + " - Data:" + data);
                             string diskquerysuffix = "?region=" + region + "&iops=" + iops + "&data=" + fixeddata.ToString() + "&throughput=" + throughput + "&currency=" + currency + "&ssd=" + ssd + "&maxdisks=" + vmInfoDisks;
                             string diskapicall = vmchooser_api_url_getdisksize + diskquerysuffix;
                             //log.Info(diskapicall);
@@ -168,7 +171,7 @@ namespace vmchooser
                                     {
                                         StreamReader diskreader = new StreamReader(diskstream, System.Text.Encoding.UTF8);
                                         String stringDiskResponse = diskreader.ReadToEnd();
-                                        // log.Info("Disk : " + stringDiskResponse);
+                                        log.Info("Disk : " + stringDiskResponse);
                                         /* Example JSON Return 
                                         {
                                            "Disk T-Shirt Size":"s20",
@@ -185,10 +188,10 @@ namespace vmchooser
                                            "Currency":"EUR"
                                         }
                                         */
-                                        JObject joDiskResponse = JObject.Parse(stringResponse);
-                                        dynamic diskInfo = (JObject)joDiskResponse["1"];
+                                        JObject joDiskResponse = JObject.Parse(stringDiskResponse);
+                                        dynamic diskInfo = (JObject)joDiskResponse;
                                         string diskInfoTshirtsize = diskInfo["Disk T-Shirt Size"];
-                                        string diskInfoType = diskInfo["Disk Type)"];
+                                        string diskInfoType = diskInfo["Disk Type"];
                                         string diskInfoCapacitySingle = diskInfo["Capacity (GB) - per disk"];
                                         string diskInfoIopsSingle = diskInfo["IOPS (IO/s) - per disk"];
                                         string diskInfoThoughputSingle = diskInfo["Througput (MB/s) - per disk"];
@@ -222,6 +225,9 @@ namespace vmchooser
                                         vmresult.InputContract = contract;
                                         vmresult.InputCurrency = currency;
                                         vmresult.InputBurstable = burst;
+                                        vmresult.DiskType = diskInfoType;
+                                        vmresult.DiskConfig = diskInfoDescription;
+                                        vmresult.DiskConfigPrice = diskInfoPrice;
                                         vmresult.Name = vmInfoName;
                                         vmresult.ACU = vmInfoAcu;
                                         vmresult.SSD = vmInfoSsd;
@@ -236,9 +242,6 @@ namespace vmchooser
                                         vmresult.PriceHour = vmInfoPricehour;
                                         vmresult.Price200h = vmInfoPrice200h;
                                         vmresult.PriceMonth = vmInfoPricemonth;
-                                        vmresult.DiskType = diskInfoType;
-                                        vmresult.DiskConfig = diskInfoDescription;
-                                        vmresult.DiskConfigPrice = diskInfoPrice;
                                         TableOperation insertOperation = TableOperation.Insert(vmresult);
                                         table.Execute(insertOperation);
                                     }
