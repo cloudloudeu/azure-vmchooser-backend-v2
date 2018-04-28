@@ -212,6 +212,10 @@ namespace vmchooser
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_INR { get; set; }
 
+        [Display(Description = "Operating System")]
+        [BsonElement("os")]
+        public Decimal OperatingSystem { get; set; }
+
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
         {
@@ -344,6 +348,10 @@ namespace vmchooser
             memory = memory * avgmempeak / 100;
             log.Info("Memory* : " + memory.ToString());
 
+            // os
+            string os = GetParameter("os", "linux", req).ToLower();
+            log.Info("OS : " + os.ToString());
+
             var filterBuilder = Builders<BsonDocument>.Filter;
             var filter  = filterBuilder.Eq("type", "vm")
                         & filterBuilder.Gte("cores", Convert.ToInt16(cores)) 
@@ -361,7 +369,8 @@ namespace vmchooser
                         & filterBuilder.In("isolated", isolatedfilter)
                         & filterBuilder.In("burstable", burstablefilter)
                         & filterBuilder.In("SSD", ssdfilter)
-                        //& filterBuilder.In("burstable", burstablefilter)
+                        & filterBuilder.Eq("contract", contract)
+                        & filterBuilder.Eq("os", os)
                         ;
             var sort = Builders<BsonDocument>.Sort.Ascending("price");
             var cursor = collection.Find<BsonDocument>(filter).Sort(sort).Limit(Convert.ToInt16(results)).ToCursor();
