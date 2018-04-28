@@ -214,7 +214,7 @@ namespace vmchooser
 
         [Display(Description = "Operating System")]
         [BsonElement("os")]
-        public Decimal OperatingSystem { get; set; }
+        public string OperatingSystem { get; set; }
 
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
