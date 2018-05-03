@@ -33,7 +33,7 @@ namespace vmchooser
         public string Region { get; set; }
 
         [Display(Description = "The Price in PAYG with the windows license included")]
-        public decimal Price_Windows_PAGY { get; set; }
+        public decimal Price_Windows_PAYG { get; set; }
 
         [Display(Description = "The Price in RI1Y with the windows license included")]
         public decimal Price_Windows_RI1Y { get; set; }
@@ -42,7 +42,7 @@ namespace vmchooser
         public decimal Price_Windows_RI3Y { get; set; }
 
         [Display(Description = "The Price in PAYG with no OS license")]
-        public decimal Price_Linux_PAGY { get; set; }
+        public decimal Price_Linux_PAYG { get; set; }
 
         [Display(Description = "The Price in RI1Y with no OS license")]
         public decimal Price_Linux_RI1Y { get; set; }
@@ -53,34 +53,34 @@ namespace vmchooser
         [Display(Description = "The currency used for the indicated pricing")]
         public String Currency = "EUR";
 
-        [Display(Description = "The price diff between linux & windows for PAGY")]
-        public decimal Diff_Os_PAGY { get; set; }
+        [Display(Description = "The price diff between linux & windows for PAYG")]
+        public decimal Diff_Os_PAYG { get; set; }
         [Display(Description = "The price diff between linux & windows for RI1Y")]
         public decimal Diff_Os_RI1Y { get; set; }
         [Display(Description = "The price diff between linux & windows for RI3Y")]
         public decimal Diff_Os_RI3Y { get; set; }
 
-        [Display(Description = "The price diff between PAGY & RI1Y for Windows")]
+        [Display(Description = "The price diff between PAYG & RI1Y for Windows")]
         public decimal Diff_Windows_RI1Y { get; set; }
-        [Display(Description = "The price diff between PAGY & RI3Y for Windows")]
+        [Display(Description = "The price diff between PAYG & RI3Y for Windows")]
         public decimal Diff_Windows_RI3Y { get; set; }
 
-        [Display(Description = "The price diff between PAGY & RI1Y for Linux")]
+        [Display(Description = "The price diff between PAYG & RI1Y for Linux")]
         public decimal Diff_Linux_RI1Y { get; set; }
-        [Display(Description = "The price diff between PAGY & RI3Y for Linux")]
+        [Display(Description = "The price diff between PAYG & RI3Y for Linux")]
         public decimal Diff_Linux_RI3Y { get; set; }
 
         public void SetDifferences()
         {
-            Diff_Os_PAGY = Price_Windows_PAGY - Price_Linux_PAGY;
+            Diff_Os_PAYG = Price_Windows_PAYG - Price_Linux_PAYG;
             Diff_Os_RI1Y = Price_Windows_RI1Y - Price_Linux_RI1Y;
             Diff_Os_RI3Y = Price_Windows_RI3Y - Price_Linux_RI3Y;
 
-            Diff_Windows_RI1Y = Price_Windows_PAGY - Price_Windows_RI1Y;
-            Diff_Windows_RI3Y = Price_Windows_PAGY - Price_Windows_RI3Y;
+            Diff_Windows_RI1Y = Price_Windows_PAYG - Price_Windows_RI1Y;
+            Diff_Windows_RI3Y = Price_Windows_PAYG - Price_Windows_RI3Y;
 
-            Diff_Linux_RI1Y = Price_Linux_PAGY - Price_Linux_RI1Y;
-            Diff_Linux_RI3Y = Price_Linux_PAGY - Price_Linux_RI3Y;
+            Diff_Linux_RI1Y = Price_Linux_PAYG - Price_Linux_RI1Y;
+            Diff_Linux_RI3Y = Price_Linux_PAYG - Price_Linux_RI3Y;
         }
 
         public void SetPrice(decimal InputPrice, string InputContract, string InputOs)
@@ -99,7 +99,7 @@ namespace vmchooser
             switch (InputContract.ToLower())
             {
                 case "payg":
-                    Price_Linux_PAGY = InputPrice;
+                    Price_Linux_PAYG = InputPrice;
                     break;
                 case "ri1y":
                     Price_Linux_RI1Y = InputPrice;
@@ -114,7 +114,7 @@ namespace vmchooser
             switch (InputContract.ToLower())
             {
                 case "payg":
-                    Price_Windows_PAGY = InputPrice;
+                    Price_Windows_PAYG = InputPrice;
                     break;
                 case "ri1y":
                     Price_Windows_RI1Y = InputPrice;
