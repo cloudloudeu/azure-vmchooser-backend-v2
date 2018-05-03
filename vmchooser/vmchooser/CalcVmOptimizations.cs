@@ -183,6 +183,7 @@ namespace vmchooser
             {
                 log.Info(document.ToString());
                 VmSize myVmSize = BsonSerializer.Deserialize<VmSize>(document);
+                myVmSize.setCurrency(currency);
                 log.Info("Price :" + myVmSize.Price + " - Contract : " + myVmSize.Contract + " - OS : " + myVmSize.OperatingSystem);
                 results.SetPrice(myVmSize.Price, myVmSize.Contract, myVmSize.OperatingSystem);
             }
