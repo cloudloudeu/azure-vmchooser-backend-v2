@@ -252,7 +252,7 @@ namespace vmchooser
             log.Info("Cores : "+cores.ToString());
             // Physical Cores (Min) #
             decimal pcores = Convert.ToDecimal(GetParameter("pcores", "0", req));
-            pcores = SetMinimum(pcores, 0);
+            pcores = SetMinimum(pcores, -127);
             log.Info("PCores : " + pcores.ToString());
             // Azure Compute Unit (Min) #
             decimal acu = Convert.ToDecimal(GetParameter("acu", "-127", req));
@@ -263,8 +263,8 @@ namespace vmchooser
             memory = SetMinimum(memory, 0);
             log.Info("Memory : " + memory.ToString());
             // NICS (Min) #
-            decimal nics = Convert.ToDecimal(GetParameter("nics", "0", req));
-            nics = SetMinimum(nics, 0);
+            decimal nics = Convert.ToDecimal(GetParameter("nics", "-127", req));
+            nics = SetMinimum(nics, -127);
             log.Info("NICs : " + nics.ToString());
             // IOPS (Min) #
             decimal iops = Convert.ToDecimal(GetParameter("iops", "-127", req));
