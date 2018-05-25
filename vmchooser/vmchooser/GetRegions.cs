@@ -18,12 +18,10 @@ using MongoDB.Bson.Serialization.Attributes;
 
 using Newtonsoft.Json;
 
-
 namespace vmchooser
 {
-
     [BsonIgnoreExtraElements] // Ignore all non-declared objects
-    public class VmSizeList
+    public class RegionList
     {
         [Display(Description = "The full name of the VM Size")]
         [BsonElement("name")]
@@ -34,9 +32,9 @@ namespace vmchooser
         public string Slug { get; set; }
     }
 
-    public static class GetVmSizes
+    public static class GetRegions
     {
-        [FunctionName("GetVmSizes")]
+        [FunctionName("GetRegions")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             // CosmosDB Parameters, retrieved via environment variables
@@ -51,18 +49,18 @@ namespace vmchooser
 
             // Get all VM sizes
             var filterBuilder = Builders<BsonDocument>.Filter;
-            var filter = filterBuilder.Eq("type", "vmsize")
+            var filter = filterBuilder.Eq("type", "region")
                         ;
 
             var cursor = collection.Find<BsonDocument>(filter).ToCursor();
 
             // Get results and put them into a list of objects
-            List<VmSizeList> documents = new List<VmSizeList>();
+            List<RegionList> documents = new List<RegionList>();
             foreach (var document in cursor.ToEnumerable())
             {
                 log.Info(document.ToString());
-                VmSizeList myVmSize = BsonSerializer.Deserialize<VmSizeList>(document);
-                documents.Add(myVmSize);
+                RegionList myRegion = BsonSerializer.Deserialize<RegionList>(document);
+                documents.Add(myRegion);
             }
 
             // Convert to JSON & return it
