@@ -1,0 +1,96 @@
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Host;
+
+using MongoDB.Driver;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
+
+using Newtonsoft.Json;
+
+
+namespace vmchooser
+{
+
+    [BsonIgnoreExtraElements] // Ignore all non-declared objects
+    public class VmSizeList
+    {
+        [Display(Description = "The full name of the VM Size")]
+        [BsonElement("name")]
+        public string Name { get; set; }
+
+        [Display(Description = "The system friendly name of the VM Size")]
+        [BsonElement("slug")]
+        public string Slug { get; set; }
+    }
+
+    public static class GetVmSizes
+    {
+        [FunctionName("GetVmSizes")]
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        {
+            // CosmosDB Parameters, retrieved via environment variables
+            string databaseName = Environment.GetEnvironmentVariable("cosmosdbDatabaseName");
+            string collectionName = Environment.GetEnvironmentVariable("cosmosdbCollectionName");
+            string mongodbConnectionString = Environment.GetEnvironmentVariable("cosmosdbMongodbConnectionString");
+
+            // This endpoint is valid for all MongoDB
+            var client = new MongoClient(mongodbConnectionString);
+            var database = client.GetDatabase(databaseName);
+            var collection = database.GetCollection<BsonDocument>(collectionName);
+
+            // Get Parameters
+            dynamic contentdata = await req.Content.ReadAsAsync<object>();
+            // Name
+            string vmsize = GetParameter("vmsize", "a0", req).ToLower();
+            log.Info("Name : " + vmsize.ToString());
+
+            // Get all VM sizes
+            var filterBuilder = Builders<BsonDocument>.Filter;
+            var filter = filterBuilder.Eq("type", "vmsize")
+                        ;
+
+            var cursor = collection.Find<BsonDocument>(filter).ToCursor();
+
+            // Get results and put them into a list of objects
+            List<VmSizeList> documents = new List<VmSizeList>();
+            foreach (var document in cursor.ToEnumerable())
+            {
+                log.Info(document.ToString());
+                VmSizeList myVmSize = BsonSerializer.Deserialize<VmSizeList>(document);
+                documents.Add(myVmSize);
+            }
+
+            // Convert to JSON & return it
+            var json = JsonConvert.SerializeObject(documents, Formatting.Indented);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
+        }
+
+        static public string GetParameter(string name, string defaultvalue, HttpRequestMessage req)
+        {
+            string value = req.GetQueryNameValuePairs()
+                .FirstOrDefault(q => string.Compare(q.Key, name, true) == 0)
+                .Value;
+            if (String.IsNullOrEmpty(value))
+            {
+                value = defaultvalue;
+            }
+
+            return value;
+        }
+    }
+}
