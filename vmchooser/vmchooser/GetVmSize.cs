@@ -216,6 +216,20 @@ namespace vmchooser
         [BsonElement("os")]
         public string OperatingSystem { get; set; }
 
+        [Display(Description = "Is the VM supported for SAP HANA? [Yes/No]")]
+        [BsonElement("SAPHANA")]
+        public string SAPHANA { get; set; }
+
+        [Display(Description = "SAPS 2-tier benchmark")]
+        [BsonElement("SAPS2T")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal SAPS2T { get; set; }
+
+        [Display(Description = "SAPS 3-tier benchmark")]
+        [BsonElement("SAPS3T")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal SAPS3T { get; set; }
+
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
         {
@@ -292,6 +306,21 @@ namespace vmchooser
             // Tier #
             string tier = GetParameter("tier", "standard", req).ToLower();
             log.Info("Tier : " + tier.ToString());
+            // SAP HANA
+            string saphana = GetParameter("saphana", "all", req).ToLower();
+            string[] saphanafilter = new string[2];
+            saphanafilter = YesNoAll(saphana);
+            log.Info("SAPHANA : " + saphana.ToString());
+            log.Info("SAPHANA[0] : " + saphanafilter[0]);
+            log.Info("SAPHANA[1] : " + saphanafilter[1]);
+            // SAPS 2T #
+            decimal saps2t = Convert.ToDecimal(GetParameter("saps2t", "-127", req));
+            saps2t = SetMinimum(saps2t, -127);
+            log.Info("SAPS2T : " + saps2t.ToString());
+            // SAPS 3T #
+            decimal saps3t = Convert.ToDecimal(GetParameter("saps3t", "-127", req));
+            saps3t = SetMinimum(saps3t, -127);
+            log.Info("SAPS3T : " + saps3t.ToString());
             // Ssd #
             string ssd = GetParameter("ssd", "all", req).ToLower();
             string[] ssdfilter = new string[2];
@@ -371,6 +400,9 @@ namespace vmchooser
                         & filterBuilder.In("SSD", ssdfilter)
                         & filterBuilder.Eq("contract", contract)
                         & filterBuilder.Eq("os", os)
+                        & filterBuilder.In("SAPHANA", saphanafilter)
+                        & filterBuilder.Gte("SAPS2T", Convert.ToInt16(saps2t))
+                        & filterBuilder.Gte("SAPS3T", Convert.ToInt16(saps3t))
                         ;
             var sort = Builders<BsonDocument>.Sort.Ascending("price");
             var cursor = collection.Find<BsonDocument>(filter).Sort(sort).Limit(Convert.ToInt16(results)).ToCursor();
