@@ -248,12 +248,15 @@ namespace vmchooser
             string currency = GetParameter("currency", "EUR", req).ToUpper();
             log.Info("Currency : " + currency.ToString());
             // Ssd #
+            string disktype = GetParameter("disktype", "all", req).ToLower();
             string ssd = GetParameter("ssd", "all", req).ToLower();
-            string[] ssdfilter = new string[2];
-            ssdfilter = YesNoAll(ssd);
+            string[] ssdfilter = new string[3];
+            ssdfilter = SSDFilter(disktype, ssd);
             log.Info("SSD : " + ssd.ToString());
+            log.Info("Type : " + disktype.ToString());
             log.Info("SSD[0] : " + ssdfilter[0]);
             log.Info("SSD[1] : " + ssdfilter[1]);
+            log.Info("SSD[2] : " + ssdfilter[2]);
             // IOPS (Min) #
             decimal iops = Convert.ToDecimal(GetParameter("iops", "1", req));
             iops = SetMinimum(iops, 1);
@@ -284,9 +287,9 @@ namespace vmchooser
             myDiskConfig.DiskPrice = 999999999;
             foreach (var document in cursor.ToEnumerable())
             {
-                log.Info(document.ToString());
+                // log.Info(document.ToString());
                 DiskSize myDiskSize = BsonSerializer.Deserialize<DiskSize>(document);
-                log.Info(myDiskSize.Name);
+                // log.Info(myDiskSize.Name);
                 myDiskSize.SetCurrency(currency);
                 myDiskConfig.Calculate(myDiskSize, maxdisks, data, iops, throughput, log);
             }
@@ -324,23 +327,45 @@ namespace vmchooser
             return value;
         }
 
-        static public string[] YesNoAll(string value)
+        static public string[] SSDFilter(string disktype, string premium)
         {
-            string[] response = new string[2];
+            string[] response = new string[3];
 
-            switch (value.ToLower())
+            switch (disktype.ToLower())
             {
-                case "yes":
-                    response[0] = "premium";
-                    response[1] = "premium";
+                case "standardhdd":
+                    response[0] = "standardhdd";
+                    response[1] = "standardhdd";
+                    response[2] = "standardhdd";
                     break;
-                case "no":
-                    response[0] = "standard";
-                    response[1] = "standard";
+                case "standardssd":
+                    response[0] = "standardssd";
+                    response[1] = "standardssd";
+                    response[2] = "standardssd";
+                    break;
+                case "premiumssd":
+                    response[0] = "premiumssd";
+                    response[1] = "premiumssd";
+                    response[2] = "premiumssd";
                     break;
                 default:
-                    response[0] = "premium";
-                    response[1] = "standard";
+                    if (premium.ToLower() == "yes")
+                    {
+                        response[0] = "standardssd";
+                        response[1] = "premiumssd";
+                        response[2] = "premiumssd";
+                        break;
+                    }
+                    if (premium.ToLower() == "no")
+                    { 
+                        response[0] = "standardhdd";
+                        response[1] = "standardhdd";
+                        response[2] = "standardhdd";
+                        break;
+                    }
+                    response[0] = "standardssd";
+                    response[1] = "premiumssd";
+                    response[2] = "standardhdd";
                     break;
             }
 
