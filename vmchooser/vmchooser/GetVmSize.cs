@@ -117,6 +117,10 @@ namespace vmchooser
         [BsonElement("isolated")]
         public string Isolated { get; set; }
 
+        [Display(Description = "Is the VM capable of constraining cores? [Yes/No]")]
+        [BsonElement("constrained")]
+        public string Constrained { get; set; }
+
         [Display(Description = "The OfferName as it's known for Azure CLI/PowerShell/RestAPI/...")]
         [BsonElement("OfferName")]
         public string OfferName { get; set; }
@@ -342,6 +346,13 @@ namespace vmchooser
             log.Info("Isolated : " + isolated.ToString());
             log.Info("Isolated[0] : " + isolatedfilter[0]);
             log.Info("Isolated[1] : " + isolatedfilter[1]);
+            // Consrained #
+            string constrained = GetParameter("constrained", "all", req).ToLower();
+            string[] constrainedfilter = new string[2];
+            constrainedfilter = YesNoAll(constrained);
+            log.Info("Isolated : " + constrained.ToString());
+            log.Info("Isolated[0] : " + constrainedfilter[0]);
+            log.Info("Isolated[1] : " + constrainedfilter[1]);
             // Region #
             string region = GetParameter("region", "europe-west", req).ToLower();
             log.Info("Region : " + region.ToString());
@@ -396,6 +407,7 @@ namespace vmchooser
                         & filterBuilder.Eq("tier", tier)
                         & filterBuilder.In("Hyperthreaded", htfilter)
                         & filterBuilder.In("isolated", isolatedfilter)
+                        & filterBuilder.In("constrained", constrainedfilter)
                         & filterBuilder.In("burstable", burstablefilter)
                         & filterBuilder.In("SSD", ssdfilter)
                         & filterBuilder.Eq("contract", contract)
