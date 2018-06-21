@@ -428,7 +428,7 @@ namespace vmchooser
 
             // Get results and put them into a list of objects
             List<VmSize> documents = new List<VmSize>();
-                foreach (var document in cursor.ToEnumerable())
+            foreach (var document in cursor.ToEnumerable())
             {
                 // Get RequestCharge
                 var LastRequestStatistics = database.RunCommand<BsonDocument>(new BsonDocument { { "getLastRequestStatistics", 1 } });

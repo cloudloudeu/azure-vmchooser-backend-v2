@@ -18,6 +18,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 using Newtonsoft.Json;
 
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace vmchooser
 {
@@ -56,10 +58,20 @@ namespace vmchooser
 
             var cursor = collection.Find<BsonDocument>(filter).ToCursor();
 
+            // Load Application Insights
+            string ApplicationInsightsKey = TelemetryConfiguration.Active.InstrumentationKey = System.Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", EnvironmentVariableTarget.Process);
+            TelemetryClient telemetry = new TelemetryClient() { InstrumentationKey = ApplicationInsightsKey };
+
             // Get results and put them into a list of objects
             List<VmSizeList> documents = new List<VmSizeList>();
             foreach (var document in cursor.ToEnumerable())
             {
+                // Get RequestCharge
+                var LastRequestStatistics = database.RunCommand<BsonDocument>(new BsonDocument { { "getLastRequestStatistics", 1 } });
+                double RequestCharge = (double)LastRequestStatistics["RequestCharge"];
+                telemetry.TrackMetric("RequestCharge", RequestCharge);
+
+                // Get Document
                 log.Info(document.ToString());
                 VmSizeList myVmSize = BsonSerializer.Deserialize<VmSizeList>(document);
                 documents.Add(myVmSize);
