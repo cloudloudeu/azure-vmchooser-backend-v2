@@ -15,9 +15,12 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Web.Http.Description;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace vmchooser
 {
+
     [BsonIgnoreExtraElements] // Ignore all non-declared objects
     public class VmSize
     {
@@ -350,9 +353,9 @@ namespace vmchooser
             string constrained = GetParameter("constrained", "all", req).ToLower();
             string[] constrainedfilter = new string[2];
             constrainedfilter = YesNoAll(constrained);
-            log.Info("Isolated : " + constrained.ToString());
-            log.Info("Isolated[0] : " + constrainedfilter[0]);
-            log.Info("Isolated[1] : " + constrainedfilter[1]);
+            log.Info("Constrained : " + constrained.ToString());
+            log.Info("Constrained[0] : " + constrainedfilter[0]);
+            log.Info("Constrained[1] : " + constrainedfilter[1]);
             // Region #
             string region = GetParameter("region", "europe-west", req).ToLower();
             log.Info("Region : " + region.ToString());
@@ -419,13 +422,22 @@ namespace vmchooser
             var sort = Builders<BsonDocument>.Sort.Ascending("price");
             var cursor = collection.Find<BsonDocument>(filter).Sort(sort).Limit(Convert.ToInt16(results)).ToCursor();
 
+            // Load Application Insights
+            string ApplicationInsightsKey = TelemetryConfiguration.Active.InstrumentationKey = System.Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", EnvironmentVariableTarget.Process);
+            TelemetryClient telemetry = new TelemetryClient() { InstrumentationKey = ApplicationInsightsKey };
+
             // Get results and put them into a list of objects
             List<VmSize> documents = new List<VmSize>();
-            foreach (var document in cursor.ToEnumerable())
+                foreach (var document in cursor.ToEnumerable())
             {
+                // Get RequestCharge
+                var LastRequestStatistics = database.RunCommand<BsonDocument>(new BsonDocument { { "getLastRequestStatistics", 1 } });
+                double RequestCharge = (double)LastRequestStatistics["RequestCharge"];
+                telemetry.TrackMetric("RequestCharge", RequestCharge);
+
+                // Get Document
                 log.Info(document.ToString());
                 VmSize myVmSize = BsonSerializer.Deserialize<VmSize>(document);
-                log.Info(myVmSize.Name);
                 myVmSize.setCurrency(currency);
                 documents.Add(myVmSize);
             }
