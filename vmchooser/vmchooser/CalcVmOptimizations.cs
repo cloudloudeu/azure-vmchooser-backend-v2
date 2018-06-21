@@ -16,6 +16,9 @@ using System.Text;
 using System.Web.Http.Description;
 using System.ComponentModel.DataAnnotations;
 
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
+
 namespace vmchooser
 {
     public class VmSizeOptimizer
@@ -179,8 +182,18 @@ namespace vmchooser
             results.Region = region;
             results.Tier = tier;
 
+            // Load Application Insights
+            string ApplicationInsightsKey = TelemetryConfiguration.Active.InstrumentationKey = System.Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", EnvironmentVariableTarget.Process);
+            TelemetryClient telemetry = new TelemetryClient() { InstrumentationKey = ApplicationInsightsKey };
+
             foreach (var document in cursor.ToEnumerable())
             {
+                // Get RequestCharge
+                var LastRequestStatistics = database.RunCommand<BsonDocument>(new BsonDocument { { "getLastRequestStatistics", 1 } });
+                double RequestCharge = (double)LastRequestStatistics["RequestCharge"];
+                telemetry.TrackMetric("RequestCharge", RequestCharge);
+
+                // Get Document
                 log.Info(document.ToString());
                 VmSize myVmSize = BsonSerializer.Deserialize<VmSize>(document);
                 myVmSize.setCurrency(currency);
