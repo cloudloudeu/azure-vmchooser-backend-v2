@@ -10,6 +10,7 @@ namespace vmchooser
 {
     public static class RescaleCosmosDB
     {
+        [Disable]
         [FunctionName("RescaleCosmosDB")]
         public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, TraceWriter log)
         {
