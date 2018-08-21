@@ -241,6 +241,7 @@ namespace vmchooser
                   & filterBuilder.Gte("maxstorage", Convert.ToInt16(data))
                   & filterBuilder.Gte("maxthroughput", Convert.ToInt16(throughput))
                   & filterBuilder.Eq("purchasemodel", purchasemodel)
+                  & filterBuilder.Eq("compute", "yes")
                   & filterBuilder.Eq("region", region)
                   & filterBuilder.Eq("contract", contract)
                 ;
