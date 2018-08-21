@@ -63,10 +63,13 @@ namespace vmchooser
         [BsonElement("region")]
         public string Region { get; set; }
 
+        [Display(Description = "Take the Hybrid Use Benefit into account?")]
+        [BsonElement("ahub")]
+        public string AHUB { get; set; }
+
         [Display(Description = "The contract used for the pricing this SQL Service")]
         [BsonElement("contract")]
         public string Contract { get; set; }
-
 
         [Display(Description = "The purchase model for this SQL Service")]
         [BsonElement("purchasemodel")]
@@ -213,6 +216,9 @@ namespace vmchooser
             // Contract #
             string contract = GetParameter("contract", "payg", req).ToLower();
             log.Info("Contract : " + contract.ToString());
+            // AHUB #
+            string ahub = GetParameter("ahub", "no", req).ToLower();
+            log.Info("AHUB : " + ahub.ToString());
             // Results (Max) #
             decimal results = Convert.ToDecimal(GetParameter("maxresults", "1", req));
             results = SetMinimum(results, 1);
@@ -243,6 +249,7 @@ namespace vmchooser
                   & filterBuilder.Eq("purchasemodel", purchasemodel)
                   & filterBuilder.Eq("compute", "yes")
                   & filterBuilder.Eq("region", region)
+                  & filterBuilder.Eq("ahub", ahub)
                   & filterBuilder.Eq("contract", contract)
                 ;
                 var sort = Builders<BsonDocument>.Sort.Ascending("price");
