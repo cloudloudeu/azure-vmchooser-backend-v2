@@ -25,11 +25,11 @@ namespace vmchooser
     {
         /*
         {
-	        "_id" : "sql-elastic-vcore-business-critical-backup-storage-lrs-asia-pacific-east",
-	        "name" : "elastic-vcore-business-critical-backup-storage-lrs",
-	        "region" : "asia-pacific-east",
+	        "_id" : "sql-elastic-vcore-general-purpose-backup-storage-lrs-us-central",
+	        "name" : "elastic-vcore-general-purpose-backup-storage-lrs",
+	        "region" : "us-central",
 	        "type" : "sql-vcore",
-	        "tier" : "business-critical-backup",
+	        "tier" : "general-purpose-backup",
 	        "purchasemodel" : "elastic",
 	        "contract" : "payg",
 	        "ahub" : "no",
@@ -40,18 +40,18 @@ namespace vmchooser
 	        "maxiops" : 0,
 	        "maxthroughput" : 0,
 	        "storage" : 1,
-            "price" : 0.15,
-	        "priceUSD" : 0.15,
-	        "priceEUR" : 0.126495,
-	        "priceGBP" : 0.11179635,
-	        "priceAUD" : 0.191055,
-	        "priceJPY" : 16.8,
-	        "priceCAD" : 0.182385,
-	        "priceDKK" : 0.94401,
-	        "priceCHF" : 0.147615,
-	        "priceSEK" : 1.3105561499999998,
-	        "priceIDR" : 2049,
-	        "priceINR" : 9.9144375
+	        "price" : 0.12,
+	        "price_USD" : 0.12,
+	        "price_EUR" : 0.10119600000000001,
+	        "price_GBP" : 0.08943708,
+	        "price_AUD" : 0.152844,
+	        "price_JPY" : 13.44,
+	        "price_CAD" : 0.14590799999999998,
+	        "price_DKK" : 0.755208,
+	        "price_CHF" : 0.11809199999999999,
+	        "price_SEK" : 1.04844492,
+	        "price_IDR" : 1639.2,
+	        "price_INR" : 7.93155
         }
         */
 
