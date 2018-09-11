@@ -204,8 +204,8 @@ namespace vmchooser
             throughput = SetMinimum(throughput, -127);
             log.Info("Throughput : " + throughput.ToString());
             // Data (Disk Capacity) (Min) #
-            decimal data = Convert.ToDecimal(GetParameter("data", "-127", req));
-            data = SetMinimum(data, -127);
+            decimal data = Convert.ToDecimal(GetParameter("data", "0", req));
+            data = SetMinimum(data, 0);
             log.Info("Data : " + data.ToString());
             // Region #
             string region = GetParameter("region", "europe-west", req).ToLower();

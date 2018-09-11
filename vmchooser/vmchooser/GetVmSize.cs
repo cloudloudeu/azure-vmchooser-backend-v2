@@ -322,10 +322,12 @@ namespace vmchooser
             log.Info("SAPHANA[1] : " + saphanafilter[1]);
             // SAPS 2T #
             decimal saps2t = Convert.ToDecimal(GetParameter("saps2t", "-127", req));
+            if (saps2t <= 0) { saps2t = -127;  }
             saps2t = SetMinimum(saps2t, -127);
             log.Info("SAPS2T : " + saps2t.ToString());
             // SAPS 3T #
             decimal saps3t = Convert.ToDecimal(GetParameter("saps3t", "-127", req));
+            if (saps3t <= 0) { saps3t = -127; }
             saps3t = SetMinimum(saps3t, -127);
             log.Info("SAPS3T : " + saps3t.ToString());
             // Ssd #
