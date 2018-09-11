@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 using MongoDB.Bson.Serialization;
 using System.Collections.Generic;
 
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
+
 namespace vmchooser
 {
     public class DiskConfig
@@ -282,11 +285,20 @@ namespace vmchooser
             var sort = Builders<BsonDocument>.Sort.Ascending("price");
             var cursor = collection.Find<BsonDocument>(filter).Sort(sort).ToCursor();
 
+            // Load Application Insights
+            string ApplicationInsightsKey = TelemetryConfiguration.Active.InstrumentationKey = System.Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", EnvironmentVariableTarget.Process);
+            TelemetryClient telemetry = new TelemetryClient() { InstrumentationKey = ApplicationInsightsKey };
+
             // Get results and put them into a list of objects
             DiskConfig myDiskConfig = new DiskConfig();
             myDiskConfig.DiskPrice = 999999999;
             foreach (var document in cursor.ToEnumerable())
-            {
+            {   
+                // Get RequestCharge
+                var LastRequestStatistics = database.RunCommand<BsonDocument>(new BsonDocument { { "getLastRequestStatistics", 1 } });
+                double RequestCharge = (double)LastRequestStatistics["RequestCharge"];
+                telemetry.TrackMetric("RequestCharge", RequestCharge);
+                
                 // log.Info(document.ToString());
                 DiskSize myDiskSize = BsonSerializer.Deserialize<DiskSize>(document);
                 // log.Info(myDiskSize.Name);
