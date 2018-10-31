@@ -134,7 +134,8 @@ namespace vmchooser
         // Calculate Backup Size
         public decimal calculateBackupSize(decimal Size, decimal Daily, decimal Weekly, decimal Monthly, decimal Yearly, decimal Churn, decimal Compression)
         {
-            return (Size
+            return ( 
+                (Size * ((100 - Compression) / 100))
                 + (Daily * Size * (Churn / 100) * ((100 - Compression) / 100))
                 + (Weekly * Size * (Churn / 100) * ((100 - Compression) / 100))
                 + (Monthly * Size * (Churn / 100) * ((100 - Compression) / 100))
