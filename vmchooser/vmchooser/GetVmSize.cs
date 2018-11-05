@@ -124,6 +124,14 @@ namespace vmchooser
         [BsonElement("constrained")]
         public string Constrained { get; set; }
 
+        [Display(Description = "Is the forseen of a dedicated Infiniband network/uplink? [Yes/No]")]
+        [BsonElement("infiniband")]
+        public string Infiniband { get; set; }
+
+        [Display(Description = "Is the forseen of GPU card(s)? [Yes/No]")]
+        [BsonElement("gpu")]
+        public string GPU { get; set; }
+
         [Display(Description = "The OfferName as it's known for Azure CLI/PowerShell/RestAPI/...")]
         [BsonElement("OfferName")]
         public string OfferName { get; set; }
@@ -351,13 +359,27 @@ namespace vmchooser
             log.Info("Isolated : " + isolated.ToString());
             log.Info("Isolated[0] : " + isolatedfilter[0]);
             log.Info("Isolated[1] : " + isolatedfilter[1]);
-            // Consrained #
+            // Constrained #
             string constrained = GetParameter("constrained", "all", req).ToLower();
             string[] constrainedfilter = new string[2];
             constrainedfilter = YesNoAll(constrained);
             log.Info("Constrained : " + constrained.ToString());
             log.Info("Constrained[0] : " + constrainedfilter[0]);
             log.Info("Constrained[1] : " + constrainedfilter[1]);
+            // Infiniband #
+            string infiniband = GetParameter("infiniband", "all", req).ToLower();
+            string[] infinibandfilter = new string[2];
+            infinibandfilter = YesNoAll(infiniband);
+            log.Info("Infiniband : " + infiniband.ToString());
+            log.Info("Infiniband[0] : " + infinibandfilter[0]);
+            log.Info("Infiniband[1] : " + infinibandfilter[1]);
+            // GPU #
+            string gpu = GetParameter("gpu", "all", req).ToLower();
+            string[] gpufilter = new string[2];
+            gpufilter = YesNoAll(gpu);
+            log.Info("GPU : " + gpu.ToString());
+            log.Info("GPU[0] : " + gpufilter[0]);
+            log.Info("GPU[1] : " + gpufilter[1]);
             // Region #
             string region = GetParameter("region", "europe-west", req).ToLower();
             log.Info("Region : " + region.ToString());
@@ -414,6 +436,8 @@ namespace vmchooser
                         & filterBuilder.In("isolated", isolatedfilter)
                         & filterBuilder.In("constrained", constrainedfilter)
                         & filterBuilder.In("burstable", burstablefilter)
+                        & filterBuilder.In("infiniband", infinibandfilter)
+                        & filterBuilder.In("gpu", gpufilter)
                         & filterBuilder.In("SSD", ssdfilter)
                         & filterBuilder.Eq("contract", contract)
                         & filterBuilder.Eq("os", os)
