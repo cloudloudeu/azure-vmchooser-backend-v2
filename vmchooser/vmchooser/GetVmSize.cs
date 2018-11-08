@@ -132,6 +132,10 @@ namespace vmchooser
         [BsonElement("gpu")]
         public string GPU { get; set; }
 
+        [Display(Description = "Is the forseen of SGX capable CPU? [Yes/No]")]
+        [BsonElement("sgx")]
+        public string SGX { get; set; }
+
         [Display(Description = "The OfferName as it's known for Azure CLI/PowerShell/RestAPI/...")]
         [BsonElement("OfferName")]
         public string OfferName { get; set; }
@@ -311,14 +315,14 @@ namespace vmchooser
             decimal temp = Convert.ToDecimal(GetParameter("temp", "-127", req));
             temp = SetMinimum(temp, -127);
             log.Info("Temp : " + temp.ToString());
-            // Hyperthreading #
+            // Hyperthreading
             string ht = GetParameter("ht", "all", req).ToLower();
             string[] htfilter = new string[2];
             htfilter = YesNoAll(ht);
             log.Info("HyperTreading : " + ht.ToString());
             log.Info("HyperTreading[0] : " + htfilter[0]);
             log.Info("HyperTreading[1] : " + htfilter[1]);
-            // Tier #
+            // Tier
             string tier = GetParameter("tier", "standard", req).ToLower();
             log.Info("Tier : " + tier.ToString());
             // SAP HANA
@@ -338,55 +342,62 @@ namespace vmchooser
             if (saps3t <= 0) { saps3t = -127; }
             saps3t = SetMinimum(saps3t, -127);
             log.Info("SAPS3T : " + saps3t.ToString());
-            // Ssd #
+            // Ssd
             string ssd = GetParameter("ssd", "all", req).ToLower();
             string[] ssdfilter = new string[2];
             ssdfilter = YesNoAll(ssd);
             log.Info("SSD : " + ssd.ToString());
             log.Info("SSD[0] : " + ssdfilter[0]);
             log.Info("SSD[1] : " + ssdfilter[1]);
-            // Burstable #
+            // Burstable
             string burstable = GetParameter("burstable", "all", req).ToLower();
             string[] burstablefilter = new string[2];
             burstablefilter = YesNoAll(burstable);
             log.Info("Burstable : " + burstable.ToString());
             log.Info("Burstable[0] : " + burstablefilter[0]);
             log.Info("Burstable[1] : " + burstablefilter[1]);
-            // Isolated #
+            // Isolated
             string isolated = GetParameter("isolated", "all", req).ToLower();
             string[] isolatedfilter = new string[2];
             isolatedfilter = YesNoAll(isolated);
             log.Info("Isolated : " + isolated.ToString());
             log.Info("Isolated[0] : " + isolatedfilter[0]);
             log.Info("Isolated[1] : " + isolatedfilter[1]);
-            // Constrained #
+            // Constrained
             string constrained = GetParameter("constrained", "all", req).ToLower();
             string[] constrainedfilter = new string[2];
             constrainedfilter = YesNoAll(constrained);
             log.Info("Constrained : " + constrained.ToString());
             log.Info("Constrained[0] : " + constrainedfilter[0]);
             log.Info("Constrained[1] : " + constrainedfilter[1]);
-            // Infiniband #
+            // Infiniband
             string infiniband = GetParameter("infiniband", "all", req).ToLower();
             string[] infinibandfilter = new string[2];
             infinibandfilter = YesNoAll(infiniband);
             log.Info("Infiniband : " + infiniband.ToString());
             log.Info("Infiniband[0] : " + infinibandfilter[0]);
             log.Info("Infiniband[1] : " + infinibandfilter[1]);
-            // GPU #
+            // GPU
             string gpu = GetParameter("gpu", "all", req).ToLower();
             string[] gpufilter = new string[2];
             gpufilter = YesNoAll(gpu);
             log.Info("GPU : " + gpu.ToString());
             log.Info("GPU[0] : " + gpufilter[0]);
             log.Info("GPU[1] : " + gpufilter[1]);
-            // Region #
+            // SGX
+            string sgx = GetParameter("sgx", "all", req).ToLower();
+            string[] sgxfilter = new string[2];
+            sgxfilter = YesNoAll(sgx);
+            log.Info("SGX : " + sgx.ToString());
+            log.Info("SGX[0] : " + sgxfilter[0]);
+            log.Info("SGX[1] : " + sgxfilter[1]);
+            // Region
             string region = GetParameter("region", "europe-west", req).ToLower();
             log.Info("Region : " + region.ToString());
-            // Currency #
+            // Currency
             string currency = GetParameter("currency", "EUR", req).ToUpper();
             log.Info("Currency : " + currency.ToString());
-            // Contract #
+            // Contract
             string contract = GetParameter("contract", "payg", req).ToLower();
             log.Info("Contract : " + contract.ToString());
             // Results (Max) #
@@ -438,6 +449,7 @@ namespace vmchooser
                         & filterBuilder.In("burstable", burstablefilter)
                         & filterBuilder.In("infiniband", infinibandfilter)
                         & filterBuilder.In("gpu", gpufilter)
+                        & filterBuilder.In("sgx", sgxfilter)
                         & filterBuilder.In("SSD", ssdfilter)
                         & filterBuilder.Eq("contract", contract)
                         & filterBuilder.Eq("os", os)
