@@ -231,6 +231,11 @@ namespace vmchooser
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_INR { get; set; }
 
+        [Display(Description = "Price in Russian Ruble")]
+        [BsonElement("price_RUB")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_RUB { get; set; }
+
         [Display(Description = "Operating System")]
         [BsonElement("os")]
         public string OperatingSystem { get; set; }
