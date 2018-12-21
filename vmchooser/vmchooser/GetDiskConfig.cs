@@ -284,6 +284,7 @@ namespace vmchooser
 
             var filterBuilder = Builders<BsonDocument>.Filter;
             var filter = filterBuilder.Eq("type", "disk")
+                        & filterBuilder.Eq("disktype", "md")
                         & filterBuilder.Eq("region", region)
                         & filterBuilder.In("tier", ssdfilter)
                         ;
