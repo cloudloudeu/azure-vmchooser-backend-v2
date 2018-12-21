@@ -124,6 +124,11 @@ namespace vmchooser
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_INR { get; set; }
 
+        [Display(Description = "Price in Russian Ruble")]
+        [BsonElement("price_RUB")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_RUB { get; set; }
+
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
         {
@@ -265,6 +270,12 @@ namespace vmchooser
         [BsonElement("price_INR")]
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal price_INR { get; set; }
+
+
+        [Display(Description = "Price in Russian Ruble")]
+        [BsonElement("price_RUB")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal price_RUB { get; set; }
 
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
