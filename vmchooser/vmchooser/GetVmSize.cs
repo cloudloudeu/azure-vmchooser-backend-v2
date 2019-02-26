@@ -254,6 +254,10 @@ namespace vmchooser
         [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
         public Decimal SAPS3T { get; set; }
 
+        [Display(Description = "The Azure SKU of this VM Size for the region for the contract type")]
+        [BsonElement("sku")]
+        public string SKU { get; set; }
+
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
         {
