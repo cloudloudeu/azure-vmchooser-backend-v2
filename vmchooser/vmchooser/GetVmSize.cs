@@ -258,6 +258,11 @@ namespace vmchooser
         [BsonElement("sku")]
         public string SKU { get; set; }
 
+        [Display(Description = "The Azure DBU (DataBricks) of this VM Size")]
+        [BsonElement("dbu")]
+        [BsonRepresentation(BsonType.Decimal128, AllowTruncation = true)]
+        public Decimal DBU { get; set; }
+
         // Set the Price & Currency on a requested currency name
         public void setCurrency(string currency)
         {
@@ -300,6 +305,10 @@ namespace vmchooser
             decimal acu = Convert.ToDecimal(GetParameter("acu", "-127", req));
             acu = SetMinimum(acu, -127);
             log.Info("ACU : " + acu.ToString());
+            // DataBricks DBU (Min) #
+            decimal dbu = Convert.ToDecimal(GetParameter("dbu", "-127", req));
+            dbu = SetMinimum(dbu, -127);
+            log.Info("DBU : " + dbu.ToString());
             // Memory (Min) #
             decimal memory = Convert.ToDecimal(GetParameter("memory", "0", req));
             memory = SetMinimum(memory, 0);
@@ -445,6 +454,7 @@ namespace vmchooser
                         & filterBuilder.Gte("mem", Convert.ToInt16(memory))
                         & filterBuilder.Gte("pcores", Convert.ToInt16(pcores))
                         & filterBuilder.Gte("ACU", Convert.ToInt16(acu))
+                        & filterBuilder.Gte("dbu", Convert.ToInt16(dbu))
                         & filterBuilder.Gte("MaxNics", Convert.ToInt16(nics))
                         & filterBuilder.Gte("MaxVmIops", Convert.ToInt16(iops))
                         & filterBuilder.Gte("MaxVmThroughputMBs", Convert.ToInt16(throughput))
